@@ -22,3 +22,13 @@
 hs_err_pid*
 .idea/
 *.iml
+
+### Node ###
+# Logs
+logs
+node
+npm-debug.log*
+
+# Dependency directories
+node_modules/
+/backend/web-boot/src/main/resources/static/public

@@ -2,17 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <description>АСУ логистической компании</description>
+    <modelVersion>4.0.0</modelVersion>
+    <description>АСУ логистической компании</description>
 
-  <groupId>ru.dkit.real</groupId>
-  <artifactId>r-logistic</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
+    <groupId>ru.dkit.real</groupId>
+    <artifactId>r-logistic</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-  <modules>
-    <module>backend/web-boot</module>
-    <module>backend/parent</module>
-  </modules>
+    <modules>
+        <module>frontend</module>
+        <module>backend/web-boot</module>
+        <module>backend/model-api</module>
+        <module>backend/model-impl</module>
+        <module>backend/rest-api</module>
+        <module>backend/parent</module>
+    </modules>
 
 </project>
