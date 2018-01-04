@@ -31,4 +31,5 @@ npm-debug.log*
 
 # Dependency directories
 node_modules/
-/backend/web-boot/src/main/resources/static/public
+backend/web-boot/src/main/resources/static/public/
+db/
