@@ -15,7 +15,9 @@ import java.util.concurrent.TimeUnit;
  * Класс запуска приложения.
  */
 @SpringBootApplication(scanBasePackages = {"ru.dkit.real.logistic"})
+@SuppressWarnings("unused")
 public class WebApplication extends SpringBootServletInitializer {
+
   @Value("${server.port:9000}")
   private int port;
 
