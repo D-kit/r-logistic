@@ -16,8 +16,7 @@ import java.util.Properties;
 @Configuration
 public class JpaConfig {
 
-  @Autowired
-  private DataSource dataSource;
+  private final DataSource dataSource;
 
   @Value("${hibernate.dialect}")
   private String hibernateDialect;
@@ -29,6 +28,11 @@ public class JpaConfig {
   private String hibernateFormatSql;
 
   private String[] entityPackagesToScan = {"ru.dkit.real.logistic.**.entities"};
+
+  @Autowired
+  public JpaConfig(DataSource dataSource) {
+    this.dataSource = dataSource;
+  }
 
   @Bean
   public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
