@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {render} from 'react-dom';
-import injectTpEventPlugin from 'react-tap-event-plugin';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 import {AppContainer} from 'react-hot-loader';
 import smoothScrollPolyfill from 'smoothscroll-polyfill';
 import 'animate.css';
@@ -20,8 +20,7 @@ window.__forceSmoothScrollPolyfill__ = true;
 const ELEMENT_TO_BOOTSTRAP = 'root';
 const BootstrapedElement = document.getElementById(ELEMENT_TO_BOOTSTRAP);
 
-injectTpEventPlugin();
-
+injectTapEventPlugin();
 
 const renderApp = RootComponent => {
   render(
