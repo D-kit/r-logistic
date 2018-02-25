@@ -1,14 +1,17 @@
 // @flow weak
 
-import React            from 'react';
-import {Route, Switch}  from 'react-router';
-import {About, Home}    from '../pages';
+import React from 'react';
+import {Route, Switch} from 'react-router';
+
+import {About, Home} from './core/pages';
+import {EditorRL} from './routesLists';
 
 const MainRoutes = () => {
   return (
       <Switch>
         <Route exact path="/" component={Home}/>
         <Route path="/about" component={About}/>
+        <Route path="/rl" component={EditorRL}/>
       </Switch>
   );
 };
