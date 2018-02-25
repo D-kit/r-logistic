@@ -1,9 +1,8 @@
 // @flow weak
 
-import axios  from 'axios';
+import axios from 'axios';
 
-export const FETCH_MOCK = 'FETCH_MOCK';
-export const FETCH      = 'FETCH';
+import {FETCH, FETCH_MOCK} from '../constants';
 //
 // FETCH_MOCK mode
 // in any action just add fetch object like:
@@ -70,7 +69,7 @@ const fetchMiddleware = store => next => action => {
     } = action.fetch;
 
     // request
-    store.dispatch({ type: request });
+    store.dispatch({type: request});
 
     // received successful for mock
     return Promise.resolve(
@@ -94,7 +93,7 @@ const fetchMiddleware = store => next => action => {
     } = action.fetch;
 
     // request
-    store.dispatch({ type: request });
+    store.dispatch({type: request});
 
     // fetch server (success or fail)
     // returns a Promise
@@ -105,7 +104,7 @@ const fetchMiddleware = store => next => action => {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Acces-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': '*',
         ...headers
       },
       ...options

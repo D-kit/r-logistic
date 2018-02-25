@@ -9,7 +9,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import configureStore, {history} from './redux/store/configureStore';
-import MainRoutes from './core/routes/MainRoutes';
+import MainRoutes from './modules/MainRoutes';
 
 class Root extends React.Component {
   render() {
