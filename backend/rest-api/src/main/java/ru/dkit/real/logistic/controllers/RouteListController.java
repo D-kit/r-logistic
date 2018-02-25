@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.dkit.real.logistic.RouteListManager;
 import ru.dkit.real.logistic.entities.routes.RouteList;
 
+import java.util.Date;
+import java.util.Map;
+
 @RestController
 @RequestMapping(value = "/api/routelist")
 @SuppressWarnings("unused")
@@ -21,8 +24,11 @@ public class RouteListController {
   }
 
   @PutMapping(value = "/create", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
-  public RouteList create() {
-    return null;
+  public RouteList create(@RequestBody Map<String, String> data) {
+    RouteList rl = new RouteList();
+    rl.setNumber(data.get("number"));
+    rl.setDate(new Date());
+    return routeListManager.create(rl);
   }
 
   @GetMapping(value = "/page", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
