@@ -3,22 +3,19 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
-import {saveRL, updateRL, fetchRL} from '../../../redux/modules/routesLists';
-
-import EditorRL from './EditorRL';
+import {fetchPageRL} from '../../../redux/modules/routesLists';
+import PageRL from './PageRL';
 
 const mapStateToProps = (state) => {
   return {
-    RL: state.routesLists.active
+    RLs: state.routesLists.entities
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
-      saveRL,
-      updateRL,
-      fetchRL
+      fetchPageRL
     },
     dispatch
   );
@@ -27,4 +24,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(EditorRL);
+)(PageRL);

@@ -11,6 +11,7 @@ import ru.dkit.real.logistic.repositories.RouteRepo;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @SuppressWarnings("unused")
@@ -26,27 +27,20 @@ public class RouteListManagerImpl implements RouteListManager {
     this.routeRepo = routeRepo;
   }
 
-  private List<Route> saveRoutes(RouteList rl, List<Route> routes) {
-    if (routes != null)
-      routes.forEach(route -> {
-        route.setRouteList(rl);
-        routeRepo.save(route);
-      });
-    return routes;
-  }
-
   @Transactional
   public RouteList create(RouteList rl) {
     if (rl.getId() == null) {
       routeListRepo.save(rl);
-      rl.setRoutes(saveRoutes(rl, rl.getRoutes()));
+      List<Route> routes = rl.getRoutes().stream().peek(r -> r.setRouteList(rl)).collect(Collectors.toList());
+      routeRepo.save(routes);
+      rl.setRoutes(routes);
       return rl;
     }
-    return null;
+    throw new RuntimeException();
   }
 
   public RouteList read(Long id) {
-    return routeListRepo.findOne(id);
+    return id != null ? routeListRepo.findOne(id) : null;
   }
 
   public Page<RouteList> readPage(Pageable pageable) {
@@ -55,13 +49,14 @@ public class RouteListManagerImpl implements RouteListManager {
 
   @Transactional
   public RouteList update(RouteList rl) {
-    Long id = rl.getId();
-    if (id != null && routeListRepo.exists(id)) {
+    RouteList rldb = read(rl.getId());
+    if (rldb != null) {
+      rl.setVersion(rldb.getVersion());
+      rl.setRoutes(rl.getRoutes().stream().peek(r -> r.setRouteList(rldb)).collect(Collectors.toList()));
       routeListRepo.save(rl);
-      rl.setRoutes(saveRoutes(rl, rl.getRoutes()));
       return rl;
     }
-    return null;
+    throw new RuntimeException("Не найден МЛ для обновления");
   }
 
   public void delete(Long id) {
