@@ -44,7 +44,7 @@ class Home extends PureComponent {
                 to={'/rl'}>
               <i className="fa fa-info"/>
               &nbsp;
-              go to rl
+              create rl
             </Link>
           </p>
         </div>

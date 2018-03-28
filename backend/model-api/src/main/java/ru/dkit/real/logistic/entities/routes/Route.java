@@ -22,16 +22,16 @@ public class Route extends AbstractEntity {
   private Integer weight;
   @JsonIgnore
   @ManyToOne
-  @JoinColumn(name = "id_routelist", nullable = false)
+  @JoinColumn(name = "id_routelist")
   private RouteList routeList;
   @ManyToOne
-  @JoinColumn(name = "id_customer", nullable = false)
+  @JoinColumn(name = "id_customer")
   private Organization customer;
   @ManyToOne
-  @JoinColumn(name = "id_source_wsh", nullable = false)
+  @JoinColumn(name = "id_source_wsh")
   private Warehouse sourceWhs;
   @ManyToOne
-  @JoinColumn(name = "id_destination_wsh", nullable = false)
+  @JoinColumn(name = "id_destination_wsh")
   private Warehouse destinationWhs;
 
   public Route() {

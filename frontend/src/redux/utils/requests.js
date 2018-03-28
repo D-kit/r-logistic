@@ -1,3 +1,5 @@
+// @flow weak
+
 import {FETCH} from '../constants';
 import appConfig from '../../config';
 
@@ -32,5 +34,9 @@ export const stdDeleteRequest = (event, rest, headers = {}, options = {}) => ({
 });
 
 export const dataPutRequest = (event, rest, data = {}, headers = {}) => (
-    stdPutRequest(event, rest, headers, {data})
+  stdPutRequest(event, rest, headers, {data})
+);
+
+export const dataPostRequest = (event, rest, data = {}, headers = {}) => (
+  stdPostRequest(event, rest, headers, {data})
 );
