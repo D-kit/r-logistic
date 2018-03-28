@@ -20,6 +20,8 @@ public class Route extends AbstractEntity {
   private Integer numBox;
   @Column(name = "weight", nullable = false)
   private Integer weight;
+  @Column(name = "temperature", nullable = false)
+  private Integer temperature;
   @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "id_routelist")
@@ -67,6 +69,14 @@ public class Route extends AbstractEntity {
 
   public void setWeight(Integer weight) {
     this.weight = weight;
+  }
+
+  public Integer getTemperature() {
+    return temperature;
+  }
+
+  public void setTemperature(Integer temperature) {
+    this.temperature = temperature;
   }
 
   public RouteList getRouteList() {
