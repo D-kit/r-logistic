@@ -4,7 +4,8 @@ import React from 'react';
 import {TableHeader, TableHeaderColumn, TableRow} from 'material-ui/Table';
 
 export const RouteFields = {
-  temperature: "ТР",
+  deliveryDate: "Дата доставки",
+  temperature: 'ТР',
   numWaybill: '№ накладной',
   numPallet: 'Палет, шт',
   numBox: 'Коробок, шт',

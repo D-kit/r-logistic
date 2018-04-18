@@ -79,12 +79,29 @@ class EditorRL extends PureComponent {
     this.setState({comment: val})
   };
 
-  onClickAddRow = () => {
-    const route = {id: new Date().getTime(), fakeid: true};
+  createEmptyRow = () => {
+    const route = {id: new Date().getTime(), fakeId: true};
     Object.keys(RouteFields).forEach((f) => {
       route[f] = '';
     });
-    this.setState({routes: [...this.state.routes, route]});
+    route.deliveryDate = null;
+    return route;
+  };
+
+  onClickAddRow = () => {
+    this.setState({routes: [...this.state.routes, this.createEmptyRow()]});
+  };
+
+  onClickCopyRow = () => {
+    const {routes, selectedIds} = this.state;
+    const copyRoutes = [];
+    routes.filter(r => selectedIds.indexOf(r.id) !== -1).forEach(r => {
+      copyRoutes.push({...r, id: new Date().getTime(), fakeId: true});
+    });
+    this.setState({
+      routes: [...routes, ...copyRoutes],
+      selectedIds: []
+    });
   };
 
   onClickDelRow = () => {
@@ -95,8 +112,10 @@ class EditorRL extends PureComponent {
     });
   };
 
-  onEditClick = (route) => {
-    this.setState({routes: this.state.routes.map(r => r.id === route.id ? route : r)});
+  onEditEnd = (route, createNext) => {
+    const erts = this.state.routes.map(r => r.id === route.id ? route : r);
+    const routes = createNext ? [...erts, this.createEmptyRow()] : erts;
+    this.setState({routes});
   };
 
   onIdsSelection = (selectedIds) => {
@@ -104,7 +123,7 @@ class EditorRL extends PureComponent {
   };
 
   save = () => {
-    const {updateRL, saveRL} = this.props;
+    const {updateRL, saveRL, history} = this.props;
     const {id, date, routes} = this.state;
 
     const data = {};
@@ -114,26 +133,35 @@ class EditorRL extends PureComponent {
     data.date = date && date.getTime();
     data.routes = routes.map((r) => {
       const route = {...r};
-      if (route.fakeid) {
+      if (route.fakeId) {
         delete route.id;
-        delete route.fakeid;
+        delete route.fakeId;
       }
       return route;
     });
 
-    id ? updateRL(data) : saveRL(data);
+    if (id) {
+      updateRL(data);
+      history.push('/rls');
+    } else {
+      saveRL(data);
+    }
   };
+
+  // Получение строки LocaleDateString из даты, полученной в милисекундах
+  getLocaleDateString = date => (date ? new Date(date).toLocaleDateString() : null);
 
   body = (entities) => (entities || []).map(
     rowData => (
       <TableRow key={rowData.id}>
-        {Object.keys(RouteFields).map((f) => <TableRowColumn key={f}>{rowData[f]}</TableRowColumn>)}
+        {Object.keys(RouteFields).map((f) => <TableRowColumn
+          key={f}>{f === 'deliveryDate' ? this.getLocaleDateString(rowData[f]) : rowData[f]}</TableRowColumn>)}
       </TableRow>
     )
   );
 
   createRowEditor = (route, onEditEnd) => (
-    <RowEditorRL data={route} onEditEnd={onEditEnd} onEditClick={this.onEditClick}/>
+    <RowEditorRL data={route} onEditEnd={onEditEnd}/>
   );
 
   render() {
@@ -150,7 +178,7 @@ class EditorRL extends PureComponent {
           <RaisedButton
             primary
             labelPosition="before"
-            label={id ? 'Обновить' : 'Создать'}
+            label={id ? 'Сохранить' : 'Создать'}
             icon={<ContentSave />}
             onClick={this.save}
           />
@@ -180,7 +208,7 @@ class EditorRL extends PureComponent {
         </div>
         <div style={styleFlex}>
           <AutoComplete
-            floatingLabelText="Грузоотправитель"
+            floatingLabelText="Заказчик"
             dataSource={['1', '2']}
           />
           <div style={{width: 16}}/>
@@ -214,12 +242,21 @@ class EditorRL extends PureComponent {
             icon={<ContentSweep />}
             disabled={!selectedIds.length}
           />
+          <div style={{width: 16}}/>
+          <RaisedButton
+            primary
+            labelPosition="before"
+            label="Копировать маршрут"
+            onClick={this.onClickCopyRow}
+            disabled={selectedIds.length !== 1}
+          />
         </div>
         <TableFit
           multiSelectable
           selectedIds={selectedIds}
           onIdsSelection={this.onIdsSelection}
           createRowEditor={this.createRowEditor}
+          onEditEnd={this.onEditEnd}
           editable
           entities={routes}
         >
@@ -228,14 +265,24 @@ class EditorRL extends PureComponent {
             { this.body(routes) }
           </TableBody>
         </TableFit>
-        <RaisedButton
-          primary
-          labelPosition="before"
-          label="Добавить маршрут"
-          onClick={this.onClickAddRow}
-          icon={<ContentAdd />}
-          disabled={selectedIds.length === 10}
-        />
+        <div style={styleFlex}>
+          <RaisedButton
+            primary
+            labelPosition="before"
+            label="Добавить маршрут"
+            onClick={this.onClickAddRow}
+            icon={<ContentAdd />}
+            disabled={selectedIds.length === 10}
+          />
+          <div style={{width: 16}}/>
+          <RaisedButton
+            primary
+            labelPosition="before"
+            label={id ? 'Сохранить' : 'Создать'}
+            icon={<ContentSave />}
+            onClick={this.save}
+          />
+        </div>
       </div>
     );
   }

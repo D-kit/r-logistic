@@ -25,7 +25,7 @@ public class RouteList extends AbstractEntity {
   @Column(name = "comment")
   private String comment;
   @OneToOne
-  @JoinColumn(name = "id_shipper")
+  @JoinColumn(name = "id_shipper") //грузоотправитель
   private Organization shipperOrganization;
   @OneToMany(mappedBy = "routeList", orphanRemoval = true, cascade = CascadeType.ALL)
   private List<Route> routes;
