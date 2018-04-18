@@ -5,6 +5,7 @@ import ru.dkit.real.logistic.entities.core.AbstractEntity;
 import ru.dkit.real.logistic.entities.core.Organization;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "route")
@@ -22,19 +23,25 @@ public class Route extends AbstractEntity {
   private Integer weight;
   @Column(name = "temperature", nullable = false)
   private Integer temperature;
-  @JsonIgnore
   @ManyToOne
-  @JoinColumn(name = "id_routelist")
-  private RouteList routeList;
+  @JoinColumn(name = "id_consignee") //грузополучатель
+  private Organization consignee;
+  @JoinColumn(name = "delivery_date")
+  private Date deliveryDate;
   @ManyToOne
-  @JoinColumn(name = "id_customer")
-  private Organization customer;
+  @JoinColumn(name = "id_client")
+  private Organization client;
   @ManyToOne
   @JoinColumn(name = "id_source_wsh")
   private Warehouse sourceWhs;
   @ManyToOne
   @JoinColumn(name = "id_destination_wsh")
   private Warehouse destinationWhs;
+
+  @JsonIgnore
+  @ManyToOne
+  @JoinColumn(name = "id_routelist")
+  private RouteList routeList;
 
   public Route() {
   }
@@ -87,12 +94,20 @@ public class Route extends AbstractEntity {
     this.routeList = routeList;
   }
 
-  public Organization getCustomer() {
-    return customer;
+  public Organization getClient() {
+    return client;
   }
 
-  public void setCustomer(Organization customer) {
-    this.customer = customer;
+  public void setClient(Organization client) {
+    this.client = client;
+  }
+
+  public Organization getConsignee() {
+    return consignee;
+  }
+
+  public void setConsignee(Organization consignee) {
+    this.consignee = consignee;
   }
 
   public Warehouse getSourceWhs() {
@@ -109,5 +124,13 @@ public class Route extends AbstractEntity {
 
   public void setDestinationWhs(Warehouse destinationWhs) {
     this.destinationWhs = destinationWhs;
+  }
+
+  public Date getDeliveryDate() {
+    return deliveryDate;
+  }
+
+  public void setDeliveryDate(Date deliveryDate) {
+    this.deliveryDate = deliveryDate;
   }
 }

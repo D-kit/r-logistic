@@ -13,6 +13,8 @@ import Checkbox from 'material-ui/Checkbox';
  onIdsSelection - вызывается при выборе и сбросе выбора строк, передает ids выбранных строк
  onRowClick - клик по строке, передает объект соответствующий строке
  checkClickedRow - (НЕ) выбирать при клике по строке
+ createRowEditor - фабрика строки для редактирования
+ onEditEnd - Редактирование строки окончено
  .
  .
  .
@@ -24,13 +26,20 @@ export default class TableFit extends React.Component {
     super(props);
     this.state = {
       selectedIds: this.props.selectedIds,
-      isEdit: false
+      isEdit: false,
+      editEntity: null
     };
   }
 
   componentWillReceiveProps(nextProps) {
     const {selectedIds} = nextProps;
     this.setState({selectedIds});
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.entities.length && prevProps.entities.length < this.props.entities.length) {
+      this.editRow(prevProps.entities.length);
+    }
   }
 
   onAllRowSelection = (cmd) => {
@@ -75,7 +84,7 @@ export default class TableFit extends React.Component {
 
   _onCellClick = (rowNumber, columnNumber, event) => {
     const {
-      entities, onRowClick, onCellClick, editable, createRowEditor,
+      entities, onRowClick, onCellClick,
       checkClickedRow, onIdsSelection
     } = this.props;
 
@@ -99,18 +108,37 @@ export default class TableFit extends React.Component {
       }
       this.setState({selectedIds: newselectedIds});
     }
+    if (columnNumber > 0)
+      this.editRow(rowNumber);
+  };
 
-    const {isEdit} = this.state;
-    if (columnNumber && editable && createRowEditor && !isEdit) {
-      const rowEditor = createRowEditor({...entities[rowNumber]}, () => {
-        this.setState({isEdit: false});
+  _editRow = (rowNumber) => {
+    const {editable, createRowEditor, entities, onEditEnd} = this.props;
+    if (editable && createRowEditor) {
+      const rowEditor = createRowEditor({...entities[rowNumber]}, (row, enterOnLastColumn) => {
+        this.setState({isEdit: false}, () => {
+          onEditEnd && onEditEnd(row, enterOnLastColumn);
+        });
       });
       const body = this.props.children[1];
       const rows = body.props.children;
       if (rows instanceof Array && rows.length) {
         rows[rowNumber] = rowEditor;
-        this.setState({isEdit: true});
+        this.setState({isEdit: true, editEntity: entities[rowNumber]});
       }
+    }
+  };
+
+  editRow = (rowNumber) => {
+    const {onEditEnd} = this.props;
+    const {isEdit, editEntity} = this.state;
+    if(isEdit && editEntity && onEditEnd) {
+      if(editEntity && onEditEnd) {
+        onEditEnd(editEntity);
+        this.setState({isEdit: false, editEntity: null}, () => {this._editRow(rowNumber);});
+      }
+    } else {
+      this._editRow(rowNumber);
     }
   };
 
@@ -202,7 +230,8 @@ TableFit.propTypes = {
   selectedIds: PropTypes.arrayOf(PropTypes.number),
   children: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   displaySelectAll: PropTypes.bool,
-  createRowEditor: PropTypes.func
+  createRowEditor: PropTypes.func,
+  onEditEnd: PropTypes.func
 };
 
 TableFit.defaultProps = {
@@ -216,5 +245,6 @@ TableFit.defaultProps = {
   checkClickedRow: false,
   selectedIds: [],
   displaySelectAll: true,
-  createRowEditor: null
+  createRowEditor: null,
+  onEditEnd: null
 };

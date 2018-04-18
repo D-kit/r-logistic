@@ -4,6 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {TableRow, TableRowColumn} from 'material-ui/Table';
 import TextField from 'material-ui/TextField';
+import DatePicker from 'material-ui/DatePicker';
 import IconButton from 'material-ui/IconButton';
 import ContentSave from 'material-ui/svg-icons/content/save';
 import {RouteFields} from '../utils';
@@ -17,48 +18,71 @@ export default class RowEditorRL extends React.Component {
     };
   }
 
-  componentWillUnmount() {
-    const {onEditClick, onEditEnd} = this.props;
-    const {dataRow} = this.state;
-    if (onEditClick) onEditClick(dataRow);
-    if (onEditEnd) onEditEnd(dataRow);
-  }
+  onKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      this.props.onEditEnd(this.state.dataRow, true);
+    }
+  };
 
   render() {
     const styleTableRowColumn = {width: 56, paddingLeft: 7, paddingRight: 0};
     const styleWrap = {display: 'inline-block', marginBottom: 0};
-    const {onEditClick, onEditEnd, data} = this.props;
+    const {onEditEnd} = this.props;
     const {dataRow} = this.state;
+    const cols = Object.keys(RouteFields);
     return (
-      <TableRow key={data.id}>
+      <TableRow key={dataRow.id}>
         <TableRowColumn key="btnCheckbox" style={styleTableRowColumn}>
           <div style={styleWrap}>
-            <IconButton
-              onClick={() => {
-                if (onEditClick) onEditClick(dataRow);
-                if (onEditEnd) onEditEnd(dataRow);
-              }}
-            >
+            <IconButton onClick={() => {
+              onEditEnd(dataRow);
+            }}>
               <ContentSave />
             </IconButton>
           </div>
         </TableRowColumn>
         {
-          Object.keys(RouteFields).map((f) =>
-            <TableRowColumn key={f}>
-              <TextField
-                hintText={RouteFields[f]}
-                value={dataRow[f]}
-                onChange={
-                  (e, val) => {
-                    const row = {};
-                    row[f] = val;
-                    this.setState({dataRow: {...dataRow, ...row}});
-                  }
-                }
-              />
-            </TableRowColumn>
-          )
+          cols.map((f) => {
+            switch (f) {
+              case 'deliveryDate':
+                return (
+                  <TableRowColumn key={f}>
+                    <DatePicker
+                      autoOk
+                      container="inline"
+                      hintText={RouteFields[f]}
+                      value={dataRow[f] && new Date(dataRow[f])}
+                      onChange={
+                        (e, val) => {
+                          const row = {};
+                          row[f] = val.getTime();
+                          this.setState({dataRow: {...dataRow, ...row}});
+                        }
+                      }
+                    />
+                  </TableRowColumn>
+                );
+              default:
+                return (
+                  <TableRowColumn key={f}>
+                    <TextField
+                      id={f}
+                      hintText={RouteFields[f]}
+                      value={dataRow[f]}
+                      fullWidth
+                      onKeyPress={f === 'weight' ? this.onKeyPress : null}
+                      onChange={
+                        (e, val) => {
+                          const row = {};
+                          row[f] = val;
+                          this.setState({dataRow: {...dataRow, ...row}});
+                        }
+                      }
+                    />
+                  </TableRowColumn>
+                );
+            }
+          })
         }
       </TableRow>
     );
@@ -67,6 +91,5 @@ export default class RowEditorRL extends React.Component {
 
 RowEditorRL.propTypes = {
   id: PropTypes.number,
-  onEditEnd: PropTypes.func,
-  onEditClick: PropTypes.func
+  onEditEnd: PropTypes.func.isRequired
 };

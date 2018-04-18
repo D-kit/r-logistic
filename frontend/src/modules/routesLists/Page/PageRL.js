@@ -2,8 +2,10 @@
 
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
+import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 
 class PageRL extends PureComponent {
   static propTypes = {
@@ -24,6 +26,10 @@ class PageRL extends PureComponent {
 
   onChangeSearch = (e, val) => {
     this.setState({search: val})
+  };
+
+  onClickCreate = () => {
+    this.props.history.push("/rl");
   };
 
   header = () => (
@@ -59,6 +65,14 @@ class PageRL extends PureComponent {
         <h3 style={{marginTop: 0}}>
           Маршрутные листы (МЛы)
         </h3>
+        <RaisedButton
+          primary
+          labelPosition="before"
+          label="Создать МЛ"
+          onClick={this.onClickCreate}
+          icon={<ContentAdd />}
+        />
+        <div style={{width: 16}}/>
         <TextField
           floatingLabelText="Поиск"
           value={this.state.search}

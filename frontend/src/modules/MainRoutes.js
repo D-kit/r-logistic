@@ -10,7 +10,7 @@ import {PageRL} from './routesLists';
 const MainRoutes = () => {
   return (
       <Switch>
-        <Route exact path="/" component={Home}/>
+        <Route exact path="/" component={PageRL}/>
         <Route path="/about" component={About}/>
         <Route path="/rl/:id" component={EditorRL}/>
         <Route path="/rl" component={EditorRL}/>
