@@ -11,10 +11,15 @@ class About extends PureComponent {
     history: PropTypes.object.isRequired,
   };
 
+  constructor(props){
+    super(props);
+    props.getName();
+  }
+
   render() {
     return (
         <h1>
-          About
+          Your name: {this.props.name}
         </h1>
     );
   }

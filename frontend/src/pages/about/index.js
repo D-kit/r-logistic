@@ -2,5 +2,14 @@
 
 import { connect }            from 'react-redux';
 import About                  from './About';
+import {stdGetRequest} from '../../core/requests';
 
-export default connect()(About);
+const mapStateToProps = state => ({
+  name: state.user.name
+});
+
+const mapDispatchToProps = dispatch => ({
+  getName: () => dispatch(stdGetRequest("GET_MY_NAME", '/user/name')),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(About);
